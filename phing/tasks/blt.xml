@@ -1,0 +1,38 @@
+<project name="blt" default="blt:update">
+  <target name="blt:update" description="Pulls in upstream changes to project template from BLT repository.">
+    <echo>You may be prompted to trust GitHub's SSL certification and to enter your GitHub password.</echo>
+    <echo>If you have two factor authentication enabled for GitHub, you must use an access token in lieu of a password.</echo>
+    <echo>GitHub access tokens can be generated here: https://github.com/settings/tokens</echo>
+
+    <input message="Press any key to continue" propertyName="continue" />
+
+    <exec dir="${repo.root}" command="./scripts/blt/update-scaffold" logoutput="true" passthru="true" checkreturn="true"/>
+  </target>
+
+  <target name="blt:init">
+    <taskdef name="randomString" classname="${blt.root}.vendor.platinumpixs.phing-random-string.src.PlatinumPixs.RandomString.GenerateTask" />
+    <randomString name="project.hash_salt" length="55" stringType="lowercase_uppercase_numeric" />
+    <copy file="${blt.root}/template/project.yml" todir="${blt.root}">
+      <filterchain>
+        <expandproperties />
+      </filterchain>
+    </copy>
+    <copy file="${blt.root}/template/docroot/sites/default/settings/default.local.settings.php" tofile="${blt.root}/local.settings.php"/>
+
+    <echo></echo>
+    <echo>The following files have been generated:</echo>
+    <echo>${blt.root}/project.yml</echo>
+    <echo>${blt.root}/local.settings.php</echo>
+    <echo></echo>
+    <echo>Modify these files and then run "./blt.sh create" to generate a new project.</echo>
+  </target>
+
+  <target name="blt:alias" description="Installs the BLT alias for command line usage.">
+    <if>
+      <not><equals arg1="${create_alias}" arg2="false"/></not>
+      <then>
+        <exec dir="${repo.root}/scripts/blt" command="./install-alias.sh" passthru="true" checkreturn="true"/>
+      </then>
+    </if>
+  </target>
+</project>
