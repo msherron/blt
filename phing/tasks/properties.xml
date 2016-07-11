@@ -23,15 +23,8 @@
     </then>
   </if>
 
-  <!-- Extract PHP variable values from local.settings.php. -->
-  <property name="local.settings.file" value="${docroot}/sites/${multisite.name}/settings/local.settings.php" />
-  <copy file="${docroot}/sites/${multisite.name}/settings/default.local.settings.php" tofile="${local.settings.file}" overwrite="false" verbose="true"/>
-
   <echo>Executing commands against multisite "${multisite.name}"</echo>
-  <echo>Using settings file ${local.settings.file}</echo>
 
-  <!-- Extracts value of $options['uri'] and outputs to local_url property in Phing. -->
-  <phpVariable file="${repo.root}/drush/drushrc.php" variable="options[uri]" outputProperty="local_url" />
 
   <!-- Default drush alias. -->
   <property name="drush.default_alias" value="self" override="false" />

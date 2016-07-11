@@ -20,4 +20,4 @@ if [ ! -f ${DIR}/vendor/bin/phing ]; then
 fi
 
 # This script simply passes all arguments to Phing.
-${DIR}/vendor/bin/phing -f ${DIR}/build/phing/build.xml "$@"
+${DIR}/vendor/bin/phing -f ${DIR}/phing/build.xml "$@"
