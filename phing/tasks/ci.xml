@@ -18,8 +18,8 @@
   </target>
 
   <target name="ci:tugboat:init" description="Initializes default tugboat configuration for this project.">
-    <copy file="${repo.root}/scripts/tugboat/Makefile" tofile="${repo.root}/Makefile"/>
-    <copy file="${repo.root}/scripts/tugboat/tugboat.drushrc.aliases.php" todir="${repo.root}/drush/site-aliases">
+    <copy file="${blt.root}/scripts/tugboat/Makefile" tofile="${repo.root}/Makefile"/>
+    <copy file="${blt.root}/scripts/tugboat/tugboat.drushrc.aliases.php" todir="${repo.root}/drush/site-aliases">
       <filterchain>
         <expandproperties />
       </filterchain>

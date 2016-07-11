@@ -6,20 +6,21 @@
 
     <input message="Press any key to continue" propertyName="continue" />
 
-    <exec dir="${repo.root}" command="./scripts/blt/update-scaffold" logoutput="true" passthru="true" checkreturn="true"/>
+    <exec dir="${blt.root}" command="./scripts/blt/update-scaffold" logoutput="true" passthru="true" checkreturn="true"/>
   </target>
 
   <target name="init">
     <taskdef name="randomString" classname="${blt.root}.vendor.platinumpixs.phing-random-string.src.PlatinumPixs.RandomString.GenerateTask" />
     <randomString name="project.hash_salt" length="55" stringType="lowercase_uppercase_numeric" />
-    <exec dir="${repo.root}" command="rsync -a --no-g --no-p ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' -v" logoutput="true" checkreturn="true"/>
+    <echo>Copying BLT files into place.</echo>
+    <exec dir="${repo.root}" command="rsync -a --no-g --no-p ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/'" logoutput="true" checkreturn="true"/>
   </target>
 
   <target name="blt:alias" description="Installs the BLT alias for command line usage.">
     <if>
       <not><equals arg1="${create_alias}" arg2="false"/></not>
       <then>
-        <exec dir="${repo.root}/scripts/blt" command="./install-alias.sh" passthru="true" checkreturn="true"/>
+        <exec dir="${blt.root}/scripts/blt" command="./install-alias.sh" passthru="true" checkreturn="true"/>
       </then>
     </if>
   </target>
