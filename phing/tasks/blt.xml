@@ -10,10 +10,31 @@
   </target>
 
   <target name="init">
+    <echo>Copying BLT files into place.</echo>
+    <!-- @todo Do not overwrite structured or executable files. Instead, update them intelligently. composer.json, project.yml, settings.php, drush.wrapper etc. -->
+    <exec dir="${repo.root}" command="rsync -a --no-g --no-p ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' -v" logoutput="true" checkreturn="true"/>
+
+    <echo>Please customize ${repo.root}/project.yml and then run:</echo>
+    <echo>blt configure</echo>
+  </target>
+
+  <target name="configure">
     <taskdef name="randomString" classname="${blt.root}.vendor.platinumpixs.phing-random-string.src.PlatinumPixs.RandomString.GenerateTask" />
     <randomString name="project.hash_salt" length="55" stringType="lowercase_uppercase_numeric" />
-    <echo>Copying BLT files into place.</echo>
-    <exec dir="${repo.root}" command="rsync -a --no-g --no-p ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/'" logoutput="true" checkreturn="true"/>
+    <!-- Reflexively expand properties in specified dirs/files. -->
+    <reflexive>
+      <fileset dir="${repo.root}">
+        <include name="composer.json" />
+        <include name="README.md" />
+        <include name="readme/**/*" />
+        <include name="docroot/profiles/**/*" />
+        <include name="docroot/sites/default/settings.php" />
+        <include name="docroot/sites/all/settings/**/*" />
+      </fileset>
+      <filterchain>
+        <expandproperties />
+      </filterchain>
+    </reflexive>
   </target>
 
   <target name="blt:alias" description="Installs the BLT alias for command line usage.">

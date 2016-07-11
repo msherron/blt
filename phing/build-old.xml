@@ -74,22 +74,7 @@
       </else>
     </if>
 
-    <!-- Reflexively expand properties in specified dirs/files. -->
-    <reflexive>
-      <fileset dir="${blt.new.dir}">
-        <include name="composer.json" />
-        <include name="project.yml" />
-        <include name="README.md" />
-        <include name="readme/**/*" />
-        <include name="docroot/profiles/**/*" />
-        <include name="docroot/sites/default/settings.php" />
-        <include name="docroot/sites/all/settings/**/*" />
-        <include name="scripts/git-hooks/*" />
-      </fileset>
-      <filterchain>
-        <expandproperties />
-      </filterchain>
-    </reflexive>
+
 
     <!-- Initialize git repository. -->
     <exec command="git init" dir="${blt.new.dir}" logoutput="true" passthru="true"/>
