@@ -1,15 +1,31 @@
 <project name="blt" default="update">
-  <target name="init">
-    <echo>Copying BLT files into place.</echo>
-    <!-- @todo Do not overwrite structured or executable files. Instead, update them intelligently. composer.json, project.yml, settings.php, drush.wrapper etc. -->
-    <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' -v" logoutput="true" checkreturn="true"/>
-
+  <target name="init" depends="blt:rsync-template">
+    <echo>BLT files have b</echo>
     <echo>Please customize ${repo.root}/project.yml and then run:</echo>
     <echo>blt configure</echo>
   </target>
 
-  <target name="update" depends="init, configure">
+  <target name="blt:rsync-template">
+    <echo>Copying BLT files into place.</echo>
+    <!-- @todo Do not overwrite structured or executable files. Instead, update them intelligently. composer.json, project.yml, settings.php, drush.wrapper etc. -->
+    <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --files-from=${blt.root}/scripts/blt/rsync-include-if-does-not-exist.txt --filter 'protect /.git/' -v" logoutput="true" checkreturn="true"/>
+  </target>
+
+  <target name="update" depends="blt:rsync-template, blt:update-composer, blt:update-yml, configure">
     <!-- @todo Ignore some files, settings.php, project.yml, in update. Instead, change only specific values. -->
+    <echo>Some of your customized files may have been overwritten.</echo>
+    <echo>Use "git add -p [filename]" to select which changes should be committed to each file.</echo>
+  </target>
+
+  <target name="blt:update-composer" description="Updates project composer.json with a subset of new key value pairs from upstream. This WILL overwrite existing values.">
+    <!--Values in the project's existing composer.json file will be overwritten.-->
+    <exec dir="${blt.root}" command="php application.php composer:munge ${repo.root}/composer.json ${blt.root}/template/composer.json > ${repo.root}/composer.json" logoutput="true" checkreturn="true"/>
+    <echo>composer.json has been modified, please run "composer update".</echo>
+  </target>
+  <target name="blt:update-yml" description="Updates project BLT .yml files with new key value pairs from upstream. This WILL NOT overwrite existing values.">
+    <!--Values in the project's existing project.yml file will be preserved and not overridden.-->
+    <exec dir="${blt.root}" command="php application.php yaml:munge ${blt.root}/template/project.yml ${repo.root}/project.yml > ${repo.root}/project.yml" logoutput="true" checkreturn="true"/>
+    <echo>project.yml has been modified.</echo>
   </target>
 
   <target name="configure">
@@ -19,7 +35,6 @@
       <fileset dir="${repo.root}">
         <include name="composer.json" />
         <include name="README.md" />
-        <include name="readme/**/*" />
         <include name="docroot/profiles/custom/**/*" />
         <include name="docroot/sites/default/settings.php" />
         <include name="docroot/sites/all/settings/**/*" />
