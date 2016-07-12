@@ -8,11 +8,12 @@
     <echo>blt configure</echo>
   </target>
 
-  <target name="update" depends="init, configure"></target>
+  <target name="update" depends="init, configure">
+    <!-- @todo Ignore some files, settings.php, project.yml, in update. Instead, change only specific values. -->
+  </target>
 
   <target name="configure">
-    <taskdef name="randomString" classname="${blt.root}.vendor.platinumpixs.phing-random-string.src.PlatinumPixs.RandomString.GenerateTask" />
-    <randomString name="project.hash_salt" length="55" stringType="lowercase_uppercase_numeric" />
+    <echo>Expanding Phing properties in BLT files.</echo>
     <!-- Reflexively expand properties in specified dirs/files. -->
     <reflexive>
       <fileset dir="${repo.root}">

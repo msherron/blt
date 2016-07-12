@@ -285,7 +285,7 @@ $settings['install_profile'] = '${project.profile.name}';
  *   $settings['hash_salt'] = file_get_contents('/home/example/salt.txt');
  * @endcode
  */
-$settings['hash_salt'] = '${project.hash_salt}';
+$settings['hash_salt'] = file_get_contents(__DIR__ . '/../../../salt.txt');
 
 /**
  * Deployment identifier.
