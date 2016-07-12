@@ -1,0 +1,21 @@
+{
+    "name": "acquia/blt-project",
+    "description": "Example project used to create new projects with BLT.",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Mattheww Grasmick",
+            "email": "matthew.grasmick@acquia.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "../"
+        }
+    ],
+    "require": {
+        "acquia/blt": "*"
+    }
+}
