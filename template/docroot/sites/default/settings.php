@@ -699,5 +699,5 @@ $settings['container_yamls'][] = __DIR__ . '/services.yml';
  * example.org, with all subdomains included.
  */
 
-// Include custom settings (caching, logging, etc...).
-require DRUPAL_ROOT . '/sites/default/settings/includes.settings.php';
+// Include BLT configuration.
+require DRUPAL_ROOT . '/sites/default/settings/blt.settings.php';

@@ -1,22 +1,14 @@
 <project name="blt" default="blt:update">
-  <target name="blt:update" description="Pulls in upstream changes to project template from BLT repository.">
-    <echo>You may be prompted to trust GitHub's SSL certification and to enter your GitHub password.</echo>
-    <echo>If you have two factor authentication enabled for GitHub, you must use an access token in lieu of a password.</echo>
-    <echo>GitHub access tokens can be generated here: https://github.com/settings/tokens</echo>
-
-    <input message="Press any key to continue" propertyName="continue" />
-
-    <exec dir="${blt.root}" command="./scripts/blt/update-scaffold" logoutput="true" passthru="true" checkreturn="true"/>
-  </target>
-
   <target name="init">
     <echo>Copying BLT files into place.</echo>
     <!-- @todo Do not overwrite structured or executable files. Instead, update them intelligently. composer.json, project.yml, settings.php, drush.wrapper etc. -->
-    <exec dir="${repo.root}" command="rsync -a --no-g --no-p ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' -v" logoutput="true" checkreturn="true"/>
+    <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' -v" logoutput="true" checkreturn="true"/>
 
     <echo>Please customize ${repo.root}/project.yml and then run:</echo>
     <echo>blt configure</echo>
   </target>
+
+  <target name="update" depends="init, configure"></target>
 
   <target name="configure">
     <taskdef name="randomString" classname="${blt.root}.vendor.platinumpixs.phing-random-string.src.PlatinumPixs.RandomString.GenerateTask" />
@@ -27,7 +19,7 @@
         <include name="composer.json" />
         <include name="README.md" />
         <include name="readme/**/*" />
-        <include name="docroot/profiles/**/*" />
+        <include name="docroot/profiles/custom/**/*" />
         <include name="docroot/sites/default/settings.php" />
         <include name="docroot/sites/all/settings/**/*" />
       </fileset>
