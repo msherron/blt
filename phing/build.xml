@@ -54,7 +54,7 @@
   <import file="${phing.dir}/tasks/vm.xml"/>
 
   <target name="list" hidden="true">
-    <exec dir="${blt.root}" command="./blt.sh -q -l" passthru="true"/>
+    <exec dir="${blt.root}" command="${phing.dir}/../vendor/bin/phing -f ${phing.dir}/build.xml -q -l" passthru="true"/>
   </target>
 
   <target name="target-hook:invoke" description="Executes a command defined in the target-hooks array.">

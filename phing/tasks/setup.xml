@@ -61,6 +61,8 @@
           description="Installs a specific Drupal site."
           depends="setup:drupal:settings">
 
+    <!--@todo Remove settings.php from git and simply append includes.settings.php. Rename to blt.settings.php. -->
+
     <drush command="site-install" assume="yes" verbose="TRUE" alias="${drush.alias}">
       <option name="site-name">"${project.human_name}"</option>
       <option name="site-mail">"${drupal.account.mail}"</option>
@@ -72,10 +74,7 @@
       <param>"install_configure_form.update_status_module='array(FALSE,FALSE)'"</param>
     </drush>
 
-    <drush command="config-import" assume="yes" alias="${drush.alias}">
-      <option name="partial"></option>
-      <param>sync</param>
-    </drush>
+    <phingcall target="setup:config-import"/>
 
     <!-- Set sites directory file permissions. -->
     <chmod mode="0755" failonerror="false">
@@ -91,6 +90,20 @@
       </fileset>
     </chmod>
 
+  </target>
+
+  <target name="setup:config-import" description="Import configuration from the config directory.">
+    <drush command="pm-enable" assume="yes" alias="${drush.alias}">
+      <param>config</param>
+    </drush>
+
+    <!-- Make db site uuid match site uuid of exported config. -->
+    <!--<exec dir="${repo.root}" command="cat ./config/default/system.site.yml | grep uuid | tail -c +7 | head -c 36 | ${drush.cmd} config-set -y system.site uuid -" logoutput="true" checkreturn="true"/>-->
+
+    <drush command="config-import" assume="yes" alias="${drush.alias}">
+      <option name="partial"></option>
+      <param>sync</param>
+    </drush>
   </target>
 
   <target name="setup:git-hooks" description="Installs git hooks to local .git/hooks directory from version controlled scripts/git-hooks directory.">
