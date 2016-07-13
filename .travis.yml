@@ -73,7 +73,8 @@ script:
   - cat ./vendor/acquia/blt/blt.sh
   - yes | ./vendor/acquia/blt/blt.sh install-alias
   - source ~/.bashrc
-  - source ~/.zshrc
+  - which blt
+  - cat ~/.bashrc
   - blt init
   # The local.hostname must be set to 127.0.0.1:8888 because we are using drush runserver to run the site on Travis CI.
   - drupal yaml:update:value project.yml project.local.hostname '127.0.0.1:8888'
