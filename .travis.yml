@@ -64,7 +64,9 @@ script:
   # It is necessary to fetch the full git history in order to use a local composer package in blt-project.
   - git fetch --unshallow
   # Generate a new 'blted' project.
-  - cd blt-project
+  - export GIT_COMMIT_HASH=$(git rev-parse HEAD)
+  - cp -R blt-project ../
+  - cd ../blt-project
   - composer install
   - export PATH=$TRAVIS_BUILD_DIR/blt-project/vendor/bin:$PATH
   - ls -lash vendor/acquia/blt
@@ -82,7 +84,7 @@ script:
   - blt deploy:build -Ddeploy.commitMsg="Automated commit by Travis CI for Build ${TRAVIS_BUILD_ID}" -Ddeploy.branch="8.x-build"
   # Add Drupal VM config to repo.
   - blt vm:init
-  # Switch back to 'blt' directory
+  # Switch back to 'blt' directory.
   - cd ..
   # Run 'blt' phpunit tests, excluding deploy-push tests.
   - phpunit tests/phpunit --exclude-group deploy-push
