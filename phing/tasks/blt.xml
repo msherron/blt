@@ -45,11 +45,11 @@
     </reflexive>
   </target>
 
-  <target name="blt:alias" description="Installs the BLT alias for command line usage.">
+  <target name="install-alias" description="Installs the BLT alias for command line usage.">
     <if>
       <not><equals arg1="${create_alias}" arg2="false"/></not>
       <then>
-        <exec dir="${blt.root}/scripts/blt" command="./install-alias.sh" passthru="true" checkreturn="true"/>
+        <exec dir="${blt.root}/scripts/blt" command="./install-alias.sh" checkreturn="true" logoutput="true"/>
       </then>
     </if>
   </target>
