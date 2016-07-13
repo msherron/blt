@@ -1,6 +1,6 @@
 <project name="blt" default="update">
   <target name="init" depends="blt:rsync-template">
-    <echo>BLT files have b</echo>
+    <echo>BLT files have been copied to your project directory.</echo>
     <echo>Please customize ${repo.root}/project.yml and then run:</echo>
     <echo>blt configure</echo>
   </target>
@@ -8,7 +8,7 @@
   <target name="blt:rsync-template">
     <echo>Copying BLT files into place.</echo>
     <!-- @todo Do not overwrite structured or executable files. Instead, update them intelligently. composer.json, project.yml, settings.php, drush.wrapper etc. -->
-    <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --files-from=${blt.root}/scripts/blt/rsync-include-if-does-not-exist.txt --filter 'protect /.git/' -v" logoutput="true" checkreturn="true"/>
+    <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' --filter 'protect /project.yml/' -v" logoutput="true" checkreturn="true"/>
   </target>
 
   <target name="update" depends="blt:rsync-template, blt:update-composer, blt:update-yml, configure">
