@@ -44,17 +44,22 @@ class ComposerMungeCommand extends Command
    * @param $file2
    */
   protected function munge($file1, $file2) {
-    $file1_contents = json_decode(file_get_contents($file1), true);
-    $file2_contents = json_decode(file_get_contents($file2), true);
+    $file1_contents = (array) json_decode(file_get_contents($file1), true);
+    $file2_contents = (array) json_decode(file_get_contents($file2), true);
 
     $merge_keys = [
       'require',
       'require-dev',
-      'scripts'
+      'scripts',
+      'repositories'
     ];
     $output = $file1_contents;
     foreach ($merge_keys as $key) {
-      $output[$key] = array_replace_recursive((array) $file1_contents[$key], (array) $file2_contents[$key]);
+      if (!array_key_exists($key, $file1_contents)) {
+        $file1_contents[$key] = [];
+      }
+      // @todo Prevent wiping out numerically keyed array values. E.g., repositories.
+      $output[$key] = array_replace_recursive($file1_contents[$key], (array) $file2_contents[$key]);
     }
 
     $output_json = json_encode($output, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);

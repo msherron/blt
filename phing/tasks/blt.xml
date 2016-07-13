@@ -6,25 +6,35 @@
   </target>
 
   <target name="blt:rsync-template">
-    <echo>Copying BLT files into place.</echo>
+    <echo>Copying files from BLT's template into your project.</echo>
     <!-- @todo Do not overwrite structured or executable files. Instead, update them intelligently. composer.json, project.yml, settings.php, drush.wrapper etc. -->
-    <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' --filter 'protect /project.yml/' -v" logoutput="true" checkreturn="true"/>
+    <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' --filter 'protect /project.yml/'" logoutput="true" checkreturn="true"/>
   </target>
 
   <target name="update" depends="blt:rsync-template, blt:update-composer, blt:update-yml, configure">
     <!-- @todo Ignore some files, settings.php, project.yml, in update. Instead, change only specific values. -->
-    <echo>Some of your customized files may have been overwritten.</echo>
-    <echo>Use "git add -p [filename]" to select which changes should be committed to each file.</echo>
+    <echo>Some of your customized files may have been modified.</echo>
+    <echo>Please review changes with "git diff".</echo>
+    <echo>If your composer.json was modified, you need to run "composer update".</echo>
+    <echo>Commit changes, or use "git add -p [filename]" to select which changes should be committed to each file.</echo>
   </target>
 
   <target name="blt:update-composer" description="Updates project composer.json with a subset of new key value pairs from upstream. This WILL overwrite existing values.">
+    <echo>Merging BLT's composer.json template with your project's composer.json</echo>
+    <echo>This MAY overwrite some existing values.</echo>
     <!--Values in the project's existing composer.json file will be overwritten.-->
-    <exec dir="${blt.root}" command="php application.php composer:munge ${repo.root}/composer.json ${blt.root}/template/composer.json > ${repo.root}/composer.json" logoutput="true" checkreturn="true"/>
-    <echo>composer.json has been modified, please run "composer update".</echo>
+    <exec dir="${blt.root}" command="php application.php composer:munge ${repo.root}/composer.json ${blt.root}/template/composer.json > ${repo.root}/composer.json.tmp" logoutput="true" checkreturn="true"/>
+    <!--@todo Find out why can't we just redirect output directly back to composer.json. -->
+    <exec dir="${repo.root}" command="mv ${repo.root}/composer.json.tmp ${repo.root}/composer.json" logoutput="true" checkreturn="true"/>
+    <echo>If your composer.json was modified, you need to run "composer update".</echo>
   </target>
   <target name="blt:update-yml" description="Updates project BLT .yml files with new key value pairs from upstream. This WILL NOT overwrite existing values.">
+    <echo>Merging BLT's project.yml template with your project's project.yml</echo>
+    <echo>This WILL NOT overwrite existing values.</echo>
     <!--Values in the project's existing project.yml file will be preserved and not overridden.-->
-    <exec dir="${blt.root}" command="php application.php yaml:munge ${blt.root}/template/project.yml ${repo.root}/project.yml > ${repo.root}/project.yml" logoutput="true" checkreturn="true"/>
+    <exec dir="${blt.root}" command="php application.php yaml:munge ${blt.root}/template/project.yml ${repo.root}/project.yml > ${repo.root}/project.yml.tmp" logoutput="true" checkreturn="true"/>
+    <!--@todo Find out why can't we just redirect output directly back to project.yml. -->
+    <exec dir="${repo.root}" command="mv ${repo.root}/project.yml.tmp ${repo.root}/project.yml" logoutput="true" checkreturn="true"/>
     <echo>project.yml has been modified.</echo>
   </target>
 
@@ -49,7 +59,7 @@
     <if>
       <not><equals arg1="${create_alias}" arg2="false"/></not>
       <then>
-        <exec dir="${blt.root}/scripts/blt" command="./install-alias.sh" checkreturn="true" logoutput="true"/>
+        <exec dir="${blt.root}/scripts/blt" command="./install-alias.sh" logoutput="true" passthru="true"/>
       </then>
     </if>
   </target>

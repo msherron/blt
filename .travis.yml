@@ -71,7 +71,7 @@ script:
   - export PATH=$TRAVIS_BUILD_DIR/blt-project/vendor/bin:$PATH
   - ls -lash vendor/acquia/blt
   - cat ./vendor/acquia/blt/blt.sh
-  - ./vendor/acquia/blt/blt.sh install-alias
+  - yes | ./vendor/acquia/blt/blt.sh install-alias
   - source ~/.bashrc
   - source ~/.zshrc
   - blt init
