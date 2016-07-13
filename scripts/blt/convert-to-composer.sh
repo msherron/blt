@@ -2,8 +2,12 @@
 
 echo "Note that you will lose any custom scripts in build/custom"
 
-rm -rf build bolt.sh
+# Move values from custom/build.yml to project.yml.
+cat build/custom/phing/build.yml >> project.yml
+# Remove unneeded files.
+rm -rf build bolt.sh tests/phpunit/blt
+# @todo remove old alias!
+# Install (new) alias
 ./vendor/acquia/blt/blt.sh install-alias
 blt init
-
-echo "Please run blt configure"
+blt configure

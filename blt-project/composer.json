@@ -8,7 +8,6 @@
             "email": "matthew.grasmick@acquia.com"
         }
     ],
-    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "vcs",
@@ -17,5 +16,7 @@
     ],
     "require": {
         "acquia/blt": "*"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

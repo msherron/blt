@@ -8,11 +8,11 @@
   <property name="blt.root.relative" value="${phing.dir}/.."/>
   <resolvepath propertyName="blt.root" file="${blt.root.relative}"/>
 
-  <!-- Load the root project.yml file for this project. -->
-  <property file="${repo.root}/project.yml" override="true"/>
-
   <!-- Load file directory and binary locations. -->
   <property file="${phing.dir}/build.yml" override="true"/>
+
+  <!-- Load the root project.yml file for this project. -->
+  <property file="${repo.root}/project.yml" override="true"/>
 
   <!-- Load the local project.local.yml file for this project. -->
   <!--@todo Change this so that it is only loaded for local:* targets. -->
