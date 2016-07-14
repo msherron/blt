@@ -1,5 +1,5 @@
 <project name="blt" default="update">
-  <target name="init" depends="blt:rsync-template">
+  <target name="init" depends="blt:rsync-template, blt:update-composer">
     <echo>BLT files have been copied to your project directory.</echo>
     <echo>Please customize ${repo.root}/project.yml and then run:</echo>
     <echo>blt configure</echo>
@@ -11,7 +11,7 @@
     <exec dir="${repo.root}" command="rsync -a --no-g --no-p --update ${blt.root}/template/ ${repo.root}/ --filter 'protect /.git/' --filter 'protect /project.yml/'" logoutput="true" checkreturn="true"/>
   </target>
 
-  <target name="update" depends="blt:rsync-template, blt:update-composer, blt:update-yml, configure">
+  <target name="update" depends="init, blt:update-yml, configure">
     <!-- @todo Ignore some files, settings.php, project.yml, in update. Instead, change only specific values. -->
     <echo>Some of your customized files may have been modified.</echo>
     <echo>Please review changes with "git diff".</echo>
