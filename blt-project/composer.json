@@ -1,7 +1,7 @@
 {
     "name": "acquia/blt-project",
     "description": "Example project used to create new projects with BLT.",
-    "license": "GPLv2",
+    "license": "GPL-2.0",
     "authors": [
         {
             "name": "Matthew Grasmick",

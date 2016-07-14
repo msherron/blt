@@ -66,6 +66,7 @@ script:
   # Generate a new 'blted' project.
   - cp -R blt-project ../
   - cd ../blt-project
+  - git init
   - composer install
   - ls -lash $TRAVIS_BUILD_DIR/../blt-project/vendor/bin
   - export PATH=$TRAVIS_BUILD_DIR/../blt-project/vendor/bin:$PATH
