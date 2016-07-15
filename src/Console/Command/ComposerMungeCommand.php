@@ -46,30 +46,56 @@ class ComposerMungeCommand extends Command
   protected function munge($file1, $file2) {
     $file1_contents = (array) json_decode(file_get_contents($file1), true);
     $file2_contents = (array) json_decode(file_get_contents($file2), true);
+    $output = $this->mergeKeyed($file1_contents, $file2_contents);
+    $output['repositories'] = $this->mergeRepositories((array) $file1_contents['repositories'], (array) $file2_contents['repositories']);
 
+    $output_json = json_encode($output, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+
+    return $output_json;
+  }
+
+  /**
+   * Merges specific keyed arrays and objects in composer.json files.
+   *
+   * @param $file1_contents
+   * @param $file2_contents
+   *
+   * @return mixed
+   */
+  protected function mergeKeyed($file1_contents, $file2_contents) {
+    // Merge keyed arrays objects.
     $merge_keys = [
-      'repositories',
+      'autoload-dev',
+      'extra',
       'require',
       'require-dev',
       'scripts',
-      'extra',
     ];
     $output = $file1_contents;
     foreach ($merge_keys as $key) {
-
       if (!array_key_exists($key, $file1_contents)) {
         $file1_contents[$key] = [];
       }
       if (!array_key_exists($key, $file2_contents)) {
         $file2_contents[$key] = [];
       }
-
       $output[$key] = $this->array_merge_recursive_distinct($file1_contents[$key], $file2_contents[$key]);
     }
 
-    $output_json = json_encode($output, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+    return $output;
+  }
 
-    return $output_json;
+  /**
+   * Merges the repositories array, which is unkeyed.
+   *
+   * @param $file1_contents
+   * @param $file2_contents
+   */
+  protected function mergeRepositories($file1_repos, $file2_repos) {
+    $repos = array_merge($file1_repos, $file2_repos);
+    $repos = array_unique($repos, SORT_REGULAR);
+
+    return $repos;
   }
 
   /**
@@ -111,15 +137,8 @@ class ComposerMungeCommand extends Command
 
       if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
       {
-        // Do not merge or overwrite numerically keyed rows. Append instead.
-        if (is_numeric($key)) {
-          $merged [] = $value;
-        }
-        else {
-          $merged [$key] = $this->array_merge_recursive_distinct ( $merged [$key], $value );
-        }
+        $merged [$key] = $this->array_merge_recursive_distinct ( $merged [$key], $value );
       }
-      // Overwrite non-numerically keyed rows.
       else
       {
         $merged [$key] = $value;
