@@ -11,3 +11,5 @@ rm -rf build bolt.sh tests/phpunit/blt
 ./vendor/acquia/blt/blt.sh install-alias
 blt init
 blt configure
+
+# Move build/custom/files to new locations (e.g., deploy excludes or .gitignores).

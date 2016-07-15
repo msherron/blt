@@ -19,7 +19,8 @@ composer:
 
 deploy:
   dir: ${repo.root}/deploy
-  exclude_file: ${repo.root}/build/core/files/deploy-exclude.txt
+  exclude_file: ${blt.root}/phing/files/deploy-exclude.txt
+  gitignore_file: ${blt.root}/phing/files/.gitignore
 
 # File and Directory locations.
 docroot.relative: ${repo.root.relative}/docroot

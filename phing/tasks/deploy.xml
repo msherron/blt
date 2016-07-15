@@ -105,7 +105,7 @@
     <exec dir="${repo.root}" command="rsync -a --no-g --no-p --delete --delete-excluded --exclude-from=${deploy.exclude_file} ${repo.root}/ ${deploy.dir}/ --filter 'protect /.git/'" logoutput="true" checkreturn="true"/>
 
     <!-- Use our own .gitignore -->
-    <copy file="${repo.root}/build/core/files/.gitignore" tofile="${deploy.dir}/.gitignore" overwrite="true"/>
+    <copy file="${deploy.gitignore_file}" tofile="${deploy.dir}/.gitignore" overwrite="true"/>
 
     <!-- Set sites/default back to 755 permissions. -->
     <!-- @todo Support multisite. -->
