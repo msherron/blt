@@ -3,12 +3,12 @@
   "license": "proprietary",
   "type":    "project",
   "description": "${project.description}",
-  "repositories": {
-    "drupal-packagist": {
+  "repositories": [
+    {
       "type": "composer",
       "url":  "https://packagist.drupal-composer.org"
     }
-  },
+  ],
   "require": {
     "composer/installers":                        "^1.0.20",
     "cweagans/composer-patches":                  "~1.0",

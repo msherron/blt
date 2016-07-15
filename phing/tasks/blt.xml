@@ -23,6 +23,7 @@
     <echo>Merging BLT's composer.json template with your project's composer.json</echo>
     <echo>This MAY overwrite some existing values.</echo>
     <!--Values in the project's existing composer.json file will be overwritten.-->
+    <echo>php application.php composer:munge ${repo.root}/composer.json ${blt.root}/template/composer.json > ${repo.root}/composer.json.tmp"</echo>
     <exec dir="${blt.root}" command="php application.php composer:munge ${repo.root}/composer.json ${blt.root}/template/composer.json > ${repo.root}/composer.json.tmp" logoutput="true" checkreturn="true"/>
     <!--@todo Find out why can't we just redirect output directly back to composer.json. -->
     <exec dir="${repo.root}" command="mv ${repo.root}/composer.json.tmp ${repo.root}/composer.json" logoutput="true" checkreturn="true"/>

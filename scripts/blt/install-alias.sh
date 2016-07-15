@@ -29,7 +29,7 @@ if [ ! -z "$DETECTED_PROFILE" ]; then
       echo "Added alias for blt to $DETECTED_PROFILE"
       echo "You may now use the 'blt' command from anywhere within a BLT-generated repository."
       echo ""
-      echo "Restart your terminal session to use the new command."
+      echo "Restart your terminal session or run 'source $DETECTED_PROFILE' to use the new command."
     else
       echo "Error: Could not modify $DETECTED_PROFILE."
     fi
