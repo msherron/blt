@@ -46,9 +46,8 @@
       <fileset dir="${repo.root}">
         <include name="composer.json" />
         <include name="README.md" />
-        <include name="docroot/profiles/custom/**/*" />
         <include name="docroot/sites/default/settings.php" />
-        <include name="docroot/sites/all/settings/**/*" />
+        <include name="docroot/sites/default/settings/**/*" />
       </fileset>
       <filterchain>
         <expandproperties />

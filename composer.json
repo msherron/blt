@@ -17,5 +17,8 @@
   },
   "bin": ["bin/blt"],
   "minimum-stability": "beta",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "scripts": {
+    "install-blt-alias": "./blt.sh install-alias"
+  }
 }

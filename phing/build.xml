@@ -1,4 +1,4 @@
-<project name="blt-core" default="list" phingVersion="2.8.2">
+<project name="blt" default="list" phingVersion="2.8.2">
 
   <!-- Include custom task classes -->
   <includepath classpath="${phing.dir}" />
