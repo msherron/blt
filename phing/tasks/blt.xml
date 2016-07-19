@@ -48,6 +48,7 @@
         <include name="README.md" />
         <include name="docroot/sites/default/settings.php" />
         <include name="docroot/sites/default/settings/**/*" />
+        <include name="scripts/git-hooks/*" />
       </fileset>
       <filterchain>
         <expandproperties />
