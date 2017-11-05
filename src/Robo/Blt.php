@@ -37,7 +37,7 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
   /**
    * The BLT version.
    */
-  const VERSION = '8.9.10';
+  const VERSION = '8.9.1';
 
   /**
    * The Robo task runner.
@@ -66,8 +66,7 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
   public function __construct(
     Config $config,
     InputInterface $input = NULL,
-    OutputInterface $output = NULL,
-    $autoloader
+    OutputInterface $output = NULL
   ) {
 
     $this->setConfig($config);
@@ -78,10 +77,9 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
     $this->addDefaultArgumentsAndOptions($application);
     $this->configureContainer($container);
     $this->addBuiltInCommandsAndHooks();
+    $this->addPluginsCommandsAndHooks();
     $this->runner = new RoboRunner();
     $this->runner->setContainer($container);
-    $this->runner->setLoader($autoloader);
-    $this->runner->setCommandFilePluginPattern('.*\\\\BltPlugin\\\\');
 
     $this->setLogger($container->get('logger'));
   }
@@ -99,6 +97,22 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
       'namespace' => 'Acquia\Blt\Robo\Hooks',
     ]);
     $this->commands = array_merge($commands, $hooks);
+  }
+
+  /**
+   * Registers custom commands and hooks defined project.
+   */
+  private function addPluginsCommandsAndHooks() {
+    $commands = $this->getCommands([
+      'path' => $this->getConfig()->get('repo.root') . '/blt/src/Commands',
+      'namespace' => 'Acquia\Blt\Custom\Commands',
+    ]);
+    $hooks = $this->getHooks([
+      'path' => $this->getConfig()->get('repo.root') . '/blt/src/Hooks',
+      'namespace' => 'Acquia\Blt\Custom\Hooks',
+    ]);
+    $plugin_commands_hooks = array_merge($commands, $hooks);
+    $this->commands = array_merge($this->commands, $plugin_commands_hooks);
   }
 
   /**
@@ -145,7 +159,7 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
   /**
    * Add any global arguments or options that apply to all commands.
    *
-   * @param \Acquia\Blt\Robo\Application $app
+   * @param \Symfony\Component\Console\Application $app
    *   The Symfony application.
    */
   private function addDefaultArgumentsAndOptions(Application $app) {

@@ -41,7 +41,7 @@ class DbCommand extends BltTasks {
    * @return \Robo\Result
    */
   protected function syncDbMultisite($multisite_name) {
-    $this->getConfig()->setSiteConfig($multisite_name);
+    $this->switchSiteContext($multisite_name);
     $result = $this->syncDbDefault();
 
     return $result;
@@ -54,7 +54,6 @@ class DbCommand extends BltTasks {
    *
    */
   public function syncDbDefault() {
-    $this->invokeCommand('setup:settings');
 
     $local_alias = '@' . $this->getConfigValue('drush.aliases.local');
     $remote_alias = '@' . $this->getConfigValue('drush.aliases.remote');
