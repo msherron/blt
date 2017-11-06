@@ -28,7 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * The BLT Robo application.
  */
-class Blt implements ContainerAwareInterface, LoggerAwareInterface {
+class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
 
   use ConfigAwareTrait;
   use ContainerAwareTrait;
@@ -66,7 +66,8 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
   public function __construct(
     Config $config,
     InputInterface $input = NULL,
-    OutputInterface $output = NULL
+    OutputInterface $output = NULL,
+    $autoloader
   ) {
 
     $this->setConfig($config);
@@ -80,6 +81,8 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
     $this->addPluginsCommandsAndHooks();
     $this->runner = new RoboRunner();
     $this->runner->setContainer($container);
+    $this->runner->setLoader($autoloader);
+    $this->runner->setCommandFilePluginPattern('.*\\\\BltPlugin\\\\');
 
     $this->setLogger($container->get('logger'));
   }
@@ -111,7 +114,11 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
       'path' => $this->getConfig()->get('repo.root') . '/blt/src/Hooks',
       'namespace' => 'Acquia\Blt\Custom\Hooks',
     ]);
-    $plugin_commands_hooks = array_merge($commands, $hooks);
+    $plugin = $this->getCommands([
+      'path' => $this->getConfig()->get('repo.root') . '/vendor/acquia-parde/power/src/Commands',
+      'namespace' => 'Acquia\Powerplant\BltPlugin\Commands',
+    ]);
+    $plugin_commands_hooks = array_merge($commands, $hooks, $plugin);
     $this->commands = array_merge($this->commands, $plugin_commands_hooks);
   }
 
@@ -126,6 +133,7 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface {
    * @return array
    *   An array of Command classes
    */
+
   private function getCommands(
     array $options = ['path' => NULL, 'namespace' => NULL]
   ) {
