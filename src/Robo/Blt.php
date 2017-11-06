@@ -108,11 +108,11 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
   private function addPluginsCommandsAndHooks() {
     $commands = $this->getCommands([
       'path' => $this->getConfig()->get('repo.root') . '/blt/src/Commands',
-      'namespace' => 'Acquia\Blt\Custom\Commands',
+      'namespace' => 'Acquia\Blt\BltPlugin\Commands',
     ]);
     $hooks = $this->getHooks([
       'path' => $this->getConfig()->get('repo.root') . '/blt/src/Hooks',
-      'namespace' => 'Acquia\Blt\Custom\Hooks',
+      'namespace' => 'Acquia\Blt\BltPlugin\Hooks',
     ]);
     $plugin = $this->getCommands([
       'path' => $this->getConfig()->get('repo.root') . '/vendor/acquia-parde/power/src/Commands',
