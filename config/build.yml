@@ -71,6 +71,12 @@ drupal:
   locale: en
   local_settings_file: ${docroot}/sites/${site}/settings/local.settings.php
   settings_file: ${docroot}/sites/${site}/settings.php
+  db:
+    database: drupal
+    username: drupal
+    password: drupal
+    host: localhost
+    port: 3306
 
 drush:
   bin: ${composer.bin}/drush
@@ -112,6 +118,8 @@ phpcbf:
 # @todo Move to subkey of tests.
 phpunit:
   - path: '${repo.root}/tests/phpunit'
+    class: 'ExampleTest'
+    file: 'ExampleTest.php'
     config: null
   # Customization for one or more custom phpunit test locations
   # and if the core (or custom) config file should be included as a -c parameter.
@@ -143,6 +151,11 @@ sync:
     - styles
     - css
     - js
+  commands:
+    - setup:composer:install
+    - sync
+    - setup:update
+    - frontend
 
 # Custom tasks that are triggered at pre-defined times in the build process.
 # The tasks hook into BLT's existing commands.
@@ -194,6 +207,9 @@ tests:
     url: http://127.0.0.1:${tests.server.port}
 
 validate:
+  deprecated:
+    filesets:
+      - files.php.custom.modules
   lint:
     filesets:
       - files.php.custom.modules
@@ -202,6 +218,10 @@ validate:
   twig:
     filesets:
       - files.twig
+    # Add any custom Twig filters for linter to ignore.
+    filters: { }
+    # Add any custom Twig functions for linter to ignore.
+    functions: { }
   yaml:
     filesets:
       - files.yaml

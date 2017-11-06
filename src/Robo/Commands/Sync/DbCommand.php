@@ -15,6 +15,7 @@ class DbCommand extends BltTasks {
    *
    * @command sync:db:all
    *
+   * @executeInDrupalVm
    */
   public function syncDbAll() {
     $exit_code = 0;
@@ -52,6 +53,8 @@ class DbCommand extends BltTasks {
    *
    * @command sync:db
    *
+   * @validateDrushConfig
+   * @executeInDrupalVm
    */
   public function syncDbDefault() {
 
@@ -70,13 +73,7 @@ class DbCommand extends BltTasks {
       ->assume(TRUE);
 
     if ($this->getConfigValue('drush.sanitize')) {
-      $drush_version = $this->getInspector()->getDrushMajorVersion();
-      if ($drush_version == 8) {
-        $task->option('sanitize');
-      }
-      else {
-        $task->drush('sql-sanitize');
-      }
+      $task->drush('sql-sanitize');
     }
 
     $task->drush('cache-clear drush');

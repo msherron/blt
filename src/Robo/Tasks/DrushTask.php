@@ -269,7 +269,7 @@ class DrushTask extends CommandStack {
     }
 
     if (isset($this->assume) && is_bool($this->assume)) {
-      $assumption = $this->assume ? 'yes' : 'no';
+      $assumption = $this->assume ? 'yes' : 'no-interaction';
       $this->option($assumption);
     }
 
@@ -286,6 +286,7 @@ class DrushTask extends CommandStack {
       $this->option('include', $this->include);
     }
 
+    $this->option('config', $this->getConfig()->get('repo.root') . '/drush/drushrc.php');
   }
 
   /**

@@ -36,8 +36,10 @@ You may disable any BLT command. This will cause the target to be skipped during
       disable-targets:
         validate:
           phpcs: true
+        git:
+          commit-msg: true
 
-This snippet would cause the `validate:phpcs` target to be skipped during BLT builds.
+This snippet would cause the `validate:phpcs` and `git:commit-msg` targets to be skipped during BLT builds.
 
 ## Adding / overriding filesets
 
@@ -71,7 +73,7 @@ Configuration values are loaded, in this order, from the following list of YAML 
 -  blt/[environment].yml
 -  blt/project.local.yml
 
-Values loaded from the later files will overwrite values in earlier files.
+Values loaded from the later files will overwrite values in earlier files. Note, if you would like to override a non-empty value with an empty value, the override value must be set to `null` and not `''` or `[]`.
 
 ### Overriding project-wide
 
@@ -156,6 +158,8 @@ You may use a custom git hook in place of BLT's default git hooks by setting its
 
 In this example, an executable file named `pre-commit` should exist in `${repo.root}/my-custom-git-hooks`.
 
+You should execute `blt setup:git-hooks` after modifying these values in order for changes to take effect.
+
 ### tests:*
 
 #### tests:behat
@@ -184,3 +188,16 @@ To modify the behavior of the tests:behat target, you may override BLT's `behat`
 #### validate:phpcs
 
 To modify the behavior of the validate:phpcs target, you may copy `phpcs.xml.dist` to `phpcs.xml` in your repository root directory and modify the XML. Please see the [official PHPCS documentation](https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#using-a-default-configuration-file) for more information.
+
+#### validate:twig
+
+To prevent validation failures on any Twig filters or functions created in custom or contrib module `twig.extension` services, add `filters` and `functions` like so:
+
+        validate:
+          twig:
+            filters:
+              - my_filter_1
+              - my_filter_2
+            functions:
+              - my_function_1
+              - my_function_2

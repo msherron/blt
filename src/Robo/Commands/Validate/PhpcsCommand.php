@@ -25,8 +25,25 @@ class PhpcsCommand extends BltTasks {
       ->run();
     $exit_code = $result->getExitCode();
     if ($exit_code) {
-      $this->logger->notice('Try running `blt fix:phpcbf` to automatically fix standards violations.');
-      throw new BltException("PHPCS failed.");
+      if ($this->input()->isInteractive()) {
+        $this->fixViolationsInteractively();
+        throw new BltException("Initial execution of PHPCS failed. Re-run now that PHPCBF has fixed some violations.");
+      }
+      else {
+        $this->logger->notice('Try running `blt fix:phpcbf` to automatically fix standards violations.');
+        throw new BltException("PHPCS failed.");
+      }
+    }
+  }
+
+  /**
+   * Prompts user to fix PHPCS violations.
+   */
+  protected function fixViolationsInteractively() {
+    $continue = $this->confirm("Attempt to fix violations automatically via PHPCBF?");
+    if ($continue) {
+      $this->invokeCommand('fix:phpcbf');
+      $this->logger->warning("You must stage any new changes to files before committing.");
     }
   }
 
@@ -47,14 +64,6 @@ class PhpcsCommand extends BltTasks {
     $this->say("Sniffing directories containing changed files...");
     $files = explode("\n", $file_list);
     $files = array_filter($files);
-
-    // We must scan directories rather than individual files in order for PHPCS
-    // extension constraints to be recognized.
-    foreach ($files as $key => $file) {
-      $files[$key] = dirname($file);
-    }
-    $files = array_unique($files);
-
     $exit_code = $this->doSniffFileList($files);
 
     return $exit_code;
@@ -76,8 +85,16 @@ class PhpcsCommand extends BltTasks {
         ->run();
 
       $bin = $this->getConfigValue('composer.bin') . '/phpcs';
+      $bootstrap = __DIR__ . "/phpcs-validate-files-bootstrap.php";
+      $command = "'$bin' --file-list='$temp_path' --bootstrap='$bootstrap' -l";
+      if ($this->output()->isVerbose()) {
+        $command .= ' -v';
+      }
+      elseif ($this->output()->isVeryVerbose()) {
+        $command .= ' -vv';
+      }
       $result = $this->taskExecStack()
-        ->exec("'$bin' --file-list='$temp_path' -l")
+        ->exec($command)
         ->printMetadata(FALSE)
         ->run();
 
