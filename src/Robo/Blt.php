@@ -28,7 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * The BLT Robo application.
  */
-class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
+class Blt implements ContainerAwareInterface, LoggerAwareInterface {
 
   use ConfigAwareTrait;
   use ContainerAwareTrait;
@@ -37,7 +37,6 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
   /**
    * The BLT version.
    */
-
   const VERSION = '8.9.11';
 
   /**
@@ -67,8 +66,7 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
   public function __construct(
     Config $config,
     InputInterface $input = NULL,
-    OutputInterface $output = NULL,
-    $autoloader
+    OutputInterface $output = NULL
   ) {
 
     $this->setConfig($config);
@@ -82,8 +80,6 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
     $this->addPluginsCommandsAndHooks();
     $this->runner = new RoboRunner();
     $this->runner->setContainer($container);
-    $this->runner->setLoader($autoloader);
-    $this->runner->setCommandFilePluginPattern('.*\\\\BltPlugin\\\\');
 
     $this->setLogger($container->get('logger'));
   }
@@ -109,17 +105,13 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
   private function addPluginsCommandsAndHooks() {
     $commands = $this->getCommands([
       'path' => $this->getConfig()->get('repo.root') . '/blt/src/Commands',
-      'namespace' => 'Acquia\Blt\BltPlugin\Commands',
+      'namespace' => 'Acquia\Blt\Custom\Commands',
     ]);
     $hooks = $this->getHooks([
       'path' => $this->getConfig()->get('repo.root') . '/blt/src/Hooks',
-      'namespace' => 'Acquia\Blt\BltPlugin\Hooks',
+      'namespace' => 'Acquia\Blt\Custom\Hooks',
     ]);
-    $plugin = $this->getCommands([
-      'path' => $this->getConfig()->get('repo.root') . '/vendor/acquia-pso/powerplant/src/Commands',
-      'namespace' => 'Acquia\Powerplant\BltPlugin\Commands',
-    ]);
-    $plugin_commands_hooks = array_merge($commands, $hooks, $plugin);
+    $plugin_commands_hooks = array_merge($commands, $hooks);
     $this->commands = array_merge($this->commands, $plugin_commands_hooks);
   }
 
@@ -134,7 +126,6 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
    * @return array
    *   An array of Command classes
    */
-
   private function getCommands(
     array $options = ['path' => NULL, 'namespace' => NULL]
   ) {
@@ -168,7 +159,7 @@ class Blt implements ContainerAwareInterface, LoggerAwareInterface  {
   /**
    * Add any global arguments or options that apply to all commands.
    *
-   * @param \Symfony\Component\Console\Application $app
+   * @param \Acquia\Blt\Robo\Application $app
    *   The Symfony application.
    */
   private function addDefaultArgumentsAndOptions(Application $app) {
