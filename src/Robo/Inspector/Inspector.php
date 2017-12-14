@@ -248,6 +248,18 @@ class Inspector implements BuilderAwareInterface, ConfigAwareInterface, Containe
   }
 
   /**
+   * Validates a drush alias.
+   *
+   * @param string $alias
+   *
+   * @return bool
+   *   TRUE if alias is valid.
+   */
+  public function isDrushAliasValid($alias) {
+    return $this->executor->drush("site-alias $alias --format=json")->run()->wasSuccessful();
+  }
+
+  /**
    * Gets the major version of drush.
    *
    * @return int
@@ -307,7 +319,8 @@ class Inspector implements BuilderAwareInterface, ConfigAwareInterface, Containe
    *   TRUE if Drupal VM configuration exists.
    */
   public function isDrupalVmConfigPresent() {
-    return file_exists($this->getConfigValue('repo.root') . '/Vagrantfile');
+    return file_exists($this->getConfigValue('repo.root') . '/Vagrantfile')
+      && file_exists($this->getConfigValue('vm.config'));
   }
 
   /**
@@ -453,6 +466,9 @@ class Inspector implements BuilderAwareInterface, ConfigAwareInterface, Containe
     }
     elseif (file_exists($home_dir . '/.profile')) {
       $file = $home_dir . '/.profile';
+    }
+    elseif (file_exists($home_dir . '/.functions')) {
+      $file = $home_dir . '/.functions';
     }
 
     return $file;

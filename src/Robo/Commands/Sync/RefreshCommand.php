@@ -14,10 +14,10 @@ class RefreshCommand extends BltTasks {
    * Copies remote db to local db, re-imports config, and executes db updates
    * for each multisite.
    *
-   * @command sync:refresh:all
-   *
    * This command does not use @executeInDrupalVm because it would require
    * SSH forwarding.
+   *
+   * @command sync:refresh:all
    *
    * @see https://github.com/acquia/blt/issues/1875
    */
@@ -45,7 +45,7 @@ class RefreshCommand extends BltTasks {
    * @return int
    */
   protected function refreshMultisite($multisite_name) {
-    $this->getConfig()->setSiteConfig($multisite_name);
+    $this->switchSiteContext($multisite_name);
     return $this->refreshDefault();
   }
 
@@ -54,14 +54,11 @@ class RefreshCommand extends BltTasks {
    * local db, re-imports config, and executes db updates.
    *
    * @command sync:refresh
+   *
+   * @aliases sync
    */
   public function refreshDefault() {
-    $this->invokeCommands([
-      'setup:composer:install',
-      'sync',
-      'setup:update',
-      'frontend',
-    ]);
+    $this->invokeCommands($this->getConfigValue('sync.commands'));
   }
 
 }

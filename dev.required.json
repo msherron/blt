@@ -1,0 +1,17 @@
+{
+  "repositories": {
+        "blt": {
+            "type": "vcs",
+            "url": "https://github.com/lcatlett/blt"
+        }
+    },
+    "require": {
+        "acquia/blt": "dev-plugin as 8.9.x-dev",
+        "consolidation/robo": "dev-plugin-commands as 1.1.0",
+    },
+        "autoload":{
+        "psr-4":{
+            "Acquia\\Blt\\BltPlugin\\":"blt/src"
+        }
+    }
+}

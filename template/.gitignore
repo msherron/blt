@@ -124,3 +124,6 @@ nbproject/*
 
 # PHPStorm
 atlassian-ide-plugin.xml
+
+#NPM
+npm-debug.log

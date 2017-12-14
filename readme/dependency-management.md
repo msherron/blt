@@ -32,7 +32,7 @@ All contributed projects hosted on drupal.org, including Drupal core, profiles, 
           "repositories": {
               "drupal": {
                   "type": "composer",
-                  "url": "https://packages.drupal.org/7"
+                  "url": "https://packages.drupal.org/8"
               }
           }
       }
@@ -99,10 +99,14 @@ BLT merges default values for composer.json using [wikimedia/composer-merge-plug
 
 This merges the `require`, `require-dev`, `autoload`, `autoload-dev`, `scripts`, and `extra` keys from BLT's own vendored files. The merged values are split into two groups
 
- 1. composer.require.json: These packages are required for BLT to function properly. You may change their versions via comopser.overrides.json, but you should not remove them.
+ 1. composer.require.json: These packages are required for BLT to function properly. You may change their versions, but you should not remove them.
  1. composer.suggested.json: You may remove the suggested packages by deleting the `vendor/acquia/blt/composer.suggested.json` line from your composer.json.
 
-If you'd like to override the default version constraint for a package provided by BLT, you may simply define the desired version in your root composer.json file.
+If you'd like to override the default version constraint for a package provided by BLT, you may simply define the desired version in your root composer.json file. Note that it order for this to work, your configuration for the merge plugin must include:
+
+        "replace": false,
+        "ignore-duplicates": true
+
 
 ### Merging in additional composer.json files
 
@@ -121,7 +125,7 @@ In situations where you have local projects, e.g. a custom module, that have the
 Drupal 8 does not have a definitive solution for downloading front end dependencies. The following solutions are suggested:
 
 * Load the library as an external library. See [Adding stylesheets (CSS) and JavaScript (JS) to a Drupal 8 module](https://www.drupal.org/developing/api/8/assets).
-* Use a front end package manager (e.g., [NPM](https://www.npmjs.com/)) to download your dependencies. Then use BLT's `frontend-build` and `post-deploy-build` target-hooks to trigger building those dependencies. E.g., call `npm install` in your theme directory via these hooks.
+* Use a front end package manager (e.g., [NPM](https://www.npmjs.com/)) to download your dependencies. Then use BLT's `frontend-build` target-hook to trigger building those dependencies. E.g., call `npm install` in your theme directory via these hooks. See [Frontend management](frontend.md) for more information.
 * Commit the library to the repository, typically in `docroot/librares`.
 *  Add the library to composer.json via a [custom repository](https://getcomposer.org/doc/05-repositories.md). Designate the package as a `drupal-library` and define a `installer-paths` path for that package type to ensure that it is installed to `docroot/libraries.` Ensure that it can be discovered in that location. See [example composer.json](https://gist.github.com/mortenson/a5390d99013b5b8c0254081e89bb4d47).
 

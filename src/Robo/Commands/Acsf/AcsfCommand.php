@@ -12,6 +12,19 @@ use Robo\Contract\VerbosityThresholdInterface;
 class AcsfCommand extends BltTasks {
 
   /**
+   * Prints information about the command.
+   */
+  public function printPreamble() {
+    $this->logger->notice("This command will initialize support for Acquia Cloud Site Factory by performing the following tasks:");
+    $this->logger->notice("  * Adding drupal/acsf and acquia/acsf-tools the require array in your composer.json file.");
+    $this->logger->notice("  * Executing the `acsf-init` command, provided by the drupal/acsf module.");
+    $this->logger->notice("  * Adding default factory-hooks to your application.");
+    $this->logger->notice("");
+    $this->logger->notice("For more information, see:");
+    $this->logger->notice("<comment>http://blt.readthedocs.io/en/8.x/readme/acsf-setup</comment>");
+  }
+
+  /**
    * Initializes ACSF support for project.
    *
    * @command acsf:init
@@ -19,6 +32,7 @@ class AcsfCommand extends BltTasks {
    * @options acsf-version
    */
   public function acsfInitialize($options = ['acsf-version' => '^1.33.0']) {
+    $this->printPreamble();
     $this->acsfHooksInitialize();
     $this->say('Adding acsf module as a dependency...');
     $package_options = [
@@ -45,6 +59,12 @@ class AcsfCommand extends BltTasks {
    * @command acsf:init:drush
    */
   public function acsfDrushInitialize() {
+
+    $this->logger->error("This command has been temporarily deprecated due to breaking changes in Drush 9.");
+    $this->logger->warning("Please follow the instructions in the acsf module for information on the initialization process.");
+    return 1;
+
+    // @codingStandardsIgnoreStart
     $this->say('Executing initialization command provided acsf module...');
 
     $this->taskFilesystemStack()->chmod("{$this->getConfigValue('docroot')}/sites/default", 755);
@@ -55,16 +75,23 @@ class AcsfCommand extends BltTasks {
       ->includePath("{$this->getConfigValue('docroot')}/modules/contrib/acsf/acsf_init")
       ->run();
 
+    if (!$result->wasSuccessful()) {
+      throw new BltException("Unable to copy ACSF scripts.");
+    }
+
     $this->say('<comment>Please add acsf_init as a dependency for your installation profile to ensure that it remains enabled.</comment>');
     $this->say('<comment>An example alias file for ACSF is located in /drush/site-aliases/example.acsf.aliases.drushrc.php.</comment>');
 
     return $result;
+    // @codingStandardsIgnoreEnd
   }
 
   /**
    * Creates "factory-hooks/" directory in project's repo root.
+   *
+   * @command acsf:init:hooks
    */
-  protected function acsfHooksInitialize() {
+  public function acsfHooksInitialize() {
     $defaultAcsfHooks = $this->getConfigValue('blt.root') . '/settings/acsf';
     $projectAcsfHooks = $this->getConfigValue('repo.root') . '/factory-hooks';
 

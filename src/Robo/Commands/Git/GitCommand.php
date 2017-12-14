@@ -26,6 +26,9 @@ class GitCommand extends BltTasks {
       $this->say("* Contain a ticket number followed by a colon and a space");
       $this->say("* Be at least 15 characters long and end with a period.");
       $this->say("Valid example: $prefix-135: Added the new picture field to the article feature.");
+      $this->say("");
+      $this->logger->notice("To disable this command, see http://blt.rtfd.io/en/8.x/readme/extending-blt/#disabling-a-command");
+      $this->logger->notice("To customize git hooks, see http://blt.rtfd.io/en/8.x/readme/extending-blt/#setupgit-hooks.");
 
       return 1;
     }
@@ -45,10 +48,7 @@ class GitCommand extends BltTasks {
    */
   public function preCommitHook($changed_files) {
     $this->invokeCommands([
-      // Passing a file list to be PHPCS will cause all specified files to
-      // be sniffed, regardless of the extensions or patterns defined in
-      // phpcs.xml. So, we do not use validate:phpcs:files.
-      'validate:phpcs' => [],
+      'validate:phpcs:files' => ['file_list' => $changed_files],
       'validate:twig:files' => ['file_list' => $changed_files],
       'validate:yaml:files' => ['file_list' => $changed_files],
     ]);
