@@ -9,6 +9,7 @@ use Acquia\Blt\Robo\Blt;
 use Acquia\Blt\Robo\Config\DefaultConfig;
 use Acquia\Blt\Robo\Config\YamlConfigProcessor;
 use Robo\Common\TimeKeeper;
+use Composer\Autoload\ClassLoader as ComposerClassLoader;
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -37,8 +38,10 @@ if ($input->hasParameterOption('environment')) {
 $config->import($processor->export());
 $config->populateHelperConfig();
 
+$autoloader = new ComposerClassLoader();
+
 // Execute command.
-$blt = new Blt($config, $input, $output);
+$blt = new Blt($config, $input, $output, $autoloader);
 $status_code = (int) $blt->run($input, $output);
 
 // Stop timer.
